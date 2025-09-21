@@ -44,7 +44,7 @@ def user_session(api_info):
     print('拿到api_info', api_info)
     """
     已登录状态的session
-    :return:
+    :return:11111111111111
     """
     session = APISession(base_url=_base_url)
     # 1、登录获取token
