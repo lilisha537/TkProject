@@ -1,0 +1,1 @@
+{'code': 400, 'msg': '用户类型必须是 personal 或 company', 'data': None}
