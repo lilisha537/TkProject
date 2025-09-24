@@ -1,42 +1,29 @@
-# import requests
-# from requests import session
+import allure
+import pytest
+
+from common.request_util import RequestUtil
+
+
+# @allure.feature("User--Roles模块")
+# class UserInfo:
+#     base_url = "http://192.168.1.120:3011"
+#     userType = ["personal","company"]
 #
+#     @allure.story("添加角色成功")
+#     @pytest.mark.parametrize("username,password,nickname,email,userType,isActive",[
+#         ("xiaozhang","xiaozhang123","测试人员","123123@qq.com","personal","True"),
 #
-# def test_get_user_info(user_session):
-#    """
-#    测试登录用户可以获取用户信息
-#    :return:
-#    """
-#    resp = user_session.request("GET", "/api/v1/auth/profile")
-#    print('获取用户信息',resp.json()["data"])
-#    assert resp.status_code == 200
-#    assert resp.json()["code"] == 200
+#     ])
+#     def test_user_info_add_success(self,token,username,password,nickname,email,
+#                                    userType,isActive):
+#         url = f"{self.base_url}/api/v1/users"
+#         headers = {"Authorization": f"Bearer {token}"}
+#         data = {"username":username,"password":password,"nickname":nickname,"email":email,
+#                 "userType":userType,"isActive":isActive}
 #
-# #     :return:
+#         response = RequestUtil.send_request("POST",url,headers=headers,json=data)
+#         assert response.status_code == 201
 #
-# def test_get_user_info_fail(session):
-#     """
-#     测试未登录用户不可以获取用户信息
-#     """
-#     resp = session.request("GET", "/api/v1/auth/profile")
+#         response_json = response.json()
+#         assert response_json["code"] == 200
 #
-#     assert resp.status_code == 401
-#
-#
-# def test_register_success(session):
-#     """
-#     测试注册成功
-#     :return:
-#     """
-#     resp = session().request("POST","/api/v1/auth/profile")
-#     assert resp.status_code == 200
-#     assert  resp.json()["code"] == 200
-#
-# def test_register_fail(session):
-#     """
-#        测试注册失败
-#        :return:
-#        """
-#     resp = session.request("GET", "/api/v1/auth/profile")
-#
-#     assert resp.status_code == 400

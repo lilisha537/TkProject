@@ -34,7 +34,7 @@ class TestRegister():
         # 密码错误
         ("1111", "123456@qq.com", 20250805, "personal"),
         #用户类型为空
-        (1111,"123456@qq.com","20250805"," "),
+        ("1111","123456@qq.com","20250805"," "),
 
     ])
     def test_register_fail(self,username,email,password,userType):
