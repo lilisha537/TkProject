@@ -16,7 +16,7 @@ class TestLogin:
         ("admin","20250805")
     ])
     @pytest.fixture(scope="session")
-    def test_login_success(self,username,password):
+    def test_login_with_token(self,username,password):
         url = f"{self.base_url}/api/v1/auth/login"
         print(url)
         data = {"username":username,"password":password}
