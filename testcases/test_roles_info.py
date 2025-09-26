@@ -1,3 +1,5 @@
+from http.client import responses
+
 import allure
 import pytest
 from pyexpat.errors import messages
@@ -99,15 +101,66 @@ def test_roles_info_list_success(self,token,page,page_size):
     assert isinstance(response_json["data"]["records"],list)
     assert  'id' in response_json["data"]["records"][0]
 
-@allure.story("获取用户列表失败")
-def test_roles_info_list_fail(self,token,page,page_size):
+
+@allure.story("获取用户列表失败--token格式不正确")
+@pytest.mark.parametrize("token,expected_code",[
+        (" ",401),  #token为空
+        ("InvalidTokenFormat",400), #token 格式不正确
+        ("expired_token",400), #token失效    #token对应的用户不存在
+    ])
+def test_roles_info_list_fail(self,token):
     url = f"{self.base_url}/api/v1/users"
     headers = {"Authorization": f"Bearer {token}"}
-    data = {"page":page,"page_size":page_size}
-    if page is not None:
-        data["page"] =page
-    if page_size is not None:
-        data["size"] =page_size
 
     response = RequestUtil.send_request("GET",url,headers=headers)
     assert response.status_code == 400
+
+
+@pytest.mark.parametrize("valid_id,expected_name",[
+    (1,"admin"),
+    (2,"lili")
+])
+@allure.story("通过ID获取用户信息")
+def test_user_by_id(id,self,token,valid_id,expected_name):
+    url = f"{self.base_url}/api/v1/users/{id}"
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response =RequestUtil.send_request("GET",url,headers=headers)
+    assert response.status_code == 200
+
+    response_json = response.json()
+    assert response_json["id"] == valid_id
+    assert "username" in response_json
+    assert isinstance(response_json["username"],str)
+    assert response_json["username"] == expected_name
+
+
+@allure.story("通过ID获取用户信息---无效用户ID失败情况")
+@pytest.mark.parametrize("invalid_id,expected_code",[
+    (999,400),
+    (0,400),
+    (-1,400),
+    ("abc",400),
+    (None,400),
+])
+def test_user_by_id_fail(self,token,invalid_id,expected_code):
+    url = f"{self.base_url}/api/v1/users/{id}"
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = RequestUtil.send_request("GET", url, headers=headers)
+    assert response.status_code == expected_code
+
+@allure.story("通过ID获取用户信息---服务器异常500")
+def test_user_id_server_error(self,mocker,token):
+    mock_response = mocker.MagicMock()
+    mock_response.status_code = 500
+
+    # 使用mocker 替换request.get 使其返回模拟的response
+    mocker.patch('requests.get', return_value=mock_response)
+
+    url = f"{self.base_url}/api/v1/users/{id}"
+    headers = {"Authorization": f"Bearer {token}"}
+    response = RequestUtil.send_request("GET", url, header=headers,id=1)  # 此时返回模拟的500响应
+
+    assert response.status_codes == 500
+    assert "Internal Server Error" in response.json().get("error", " ")
